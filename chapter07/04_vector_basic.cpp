@@ -1,6 +1,10 @@
 /*
  * 파일명: 04_vector_basic.cpp
  * 
+ * STL (Standard Template Library)
+= C++ 표준 템플릿 라이브러리
+= 자료구조 + 알고리즘 + 반복자를 모아놓은 강력한 표준 라이브러리
+ * 
  * 주제: vector 기초 (Vector Basics)
  * 정의: 동적 배열을 제공하는 STL 컨테이너
  * 
@@ -58,7 +62,7 @@ int main() {
     // vector 생성과 초기화
     vector<int> numbers;
     vector<int> scores = {90, 85, 92, 78, 96};
-    vector<string> names(3, "unknown");  // 3개 요소를 "unknown"으로 초기화
+    vector<string> names(3, "unknown");  // 3개 요소를 "unknown"으로 초기화    names = { "unknown", "unknown", "unknown" };
 
     cout << "=== 요소 추가 ===" << endl;
     numbers.push_back(10);

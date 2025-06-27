@@ -14,6 +14,11 @@
  * - 컴파일 타임 다형성: 함수 오버로딩, 템플릿 (정적 바인딩)
  * - 런타임 다형성: 가상 함수를 통한 동적 바인딩 (이 예제)
  * 
+ * dynamic_cast란?
+ * - 런타임에 안전한 타입 변환을 수행하는 C++ 캐스팅 연산자
+ * - 상속 관계에서 다운캐스팅(부모→자식)과 크로스캐스팅을 안전하게 수행
+ * - RTTI(Runtime Type Information)가 필요
+ * 
  * 사용 시기:
  * - 공통 인터페이스를 가진 여러 클래스를 통일된 방식으로 처리할 때
  * - 확장 가능한 시스템을 설계할 때 (새로운 타입 추가가 쉬움)
@@ -38,10 +43,11 @@
  * - 과도한 추상화는 코드 복잡성 증가
  * - 가상 소멸자 필수 (메모리 누수 방지)
  */
-
 #include <iostream>
+#include <memory>
 using namespace std;
 
+// 기본 클래스
 class Vehicle {
 protected:
     string brand;
@@ -50,68 +56,67 @@ public:
     Vehicle(string b) : brand(b) {}
     virtual ~Vehicle() {}
 
-    virtual void start() = 0;
+    virtual void start() = 0;  // 순수 가상함수
     virtual void stop() = 0;
-    virtual void getInfo() {
-        cout << "브랜드: " << brand << endl;
-    }
 };
 
+// 파생 클래스들
 class Car : public Vehicle {
 public:
     Car(string b) : Vehicle(b) {}
-
+    
     void start() override {
-        cout << brand << " 자동차 시동을 켭니다. 부릉부릉!" << endl;
+        cout << brand << " 자동차 시동! 부릉부릉!" << endl;
+    }
+    
+    void stop() override {
+        cout << brand << " 자동차 정지" << endl;
     }
 
-    void stop() override {
-        cout << brand << " 자동차를 정지합니다." << endl;
+    void print() {
+        cout << "Car" << endl;
     }
 };
 
 class Motorcycle : public Vehicle {
 public:
     Motorcycle(string b) : Vehicle(b) {}
-
+    
     void start() override {
-        cout << brand << " 오토바이 시동을 켭니다. 붕붕!" << endl;
+        cout << brand << " 오토바이 시동! 붕붕!" << endl;
+    }
+    
+    void stop() override {
+        cout << brand << " 오토바이 정지" << endl;
     }
 
-    void stop() override {
-        cout << brand << " 오토바이를 정지합니다." << endl;
+    void print() {
+        cout << "Motorcycle" << endl;
     }
 };
 
-// 다형성을 활용한 함수
-void driveVehicle(Vehicle* vehicle) {
-    vehicle->getInfo();
-    vehicle->start();
-    cout << "운전 중..." << endl;
-    vehicle->stop();
-    cout << endl;
-}
-
 int main() {
-    // 각각의 객체 생성
-    Car car1("현대");
-    Motorcycle motorcycle1("혼다");
-    Car car2("BMW");
+    // 객체 생성
+    Car car("현대");
+    Motorcycle bike("혼다");
+    
+    // 다형성: 같은 포인터 타입으로 다른 객체들 처리
+    Vehicle* vehicles[] = {&car, &bike};
+    
+    cout << "=== 다형성 테스트 ===" << endl;
+    for (int i = 0; i < 2; i++) {
+        vehicles[i]->start();  // 각 객체의 실제 start() 호출
+        vehicles[i]->stop();   // 각 객체의 실제 stop() 호출
+        
+        if (Car* car = dynamic_cast<Car*>(vehicles[i])) {
+            // car 사용
+            car->print();
+        } else if (Motorcycle* motorcycle = dynamic_cast<Motorcycle*>(vehicles[i])) {
+            motorcycle->print();
+        }
 
-    // 배열을 사용한 다형성
-    Vehicle* garage[3] = {&car1, &motorcycle1, &car2};
-
-    cout << "=== 차고의 모든 차량 운전 ===" << endl;
-    for (int i = 0; i < 3; i++) {
-        driveVehicle(garage[i]);
+        cout << endl;
     }
-
-    cout << "=== 개별 차량 운전 ===" << endl;
-    Vehicle* selectedVehicle = &car1;
-    driveVehicle(selectedVehicle);
-
-    selectedVehicle = &motorcycle1;
-    driveVehicle(selectedVehicle);
-
+    
     return 0;
 }

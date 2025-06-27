@@ -71,11 +71,11 @@ public:
 };
 
 int main() {
-    cout << "=== 직접 객체 생성 ===" << endl;
-    {
-        Derived d;
-        d.display();
-    }
+    // cout << "=== 직접 객체 생성 ===" << endl;
+    // {
+    //     Derived d;
+    //     d.display();
+    // }
 
     cout << "\n=== 포인터를 통한 동적 할당 ===" << endl;
     {

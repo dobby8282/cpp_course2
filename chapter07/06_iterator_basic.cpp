@@ -58,6 +58,9 @@ int main() {
     cout << "=== vector 반복자 ===" << endl;
     vector<int> numbers = {10, 20, 30, 40, 50};
 
+    cout << "numbers.begin()" << *numbers.begin() << endl;
+    cout << "numbers.end()" << *numbers.end() << endl;
+
     // 순방향 반복자
     cout << "순방향: ";
     for (vector<int>::iterator it = numbers.begin(); it != numbers.end(); ++it) {
